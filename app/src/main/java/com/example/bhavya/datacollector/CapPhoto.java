@@ -11,24 +11,32 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.StrictMode;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
+
 
 public class CapPhoto extends Service
 {
+
     private SurfaceHolder sHolder;
     private Camera mCamera;
     private Parameters parameters;
-
 
     @Override
     public void onCreate()
@@ -36,48 +44,76 @@ public class CapPhoto extends Service
         super.onCreate();
         Log.d("CAM", "start");
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy =
-                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);};
-        Thread myThread = null;
+//
+//        if (android.os.Build.VERSION.SDK_INT > 9) {
+//            StrictMode.ThreadPolicy policy =
+//                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//            StrictMode.setThreadPolicy(policy);}
+//          Thread myThread = null;
 
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand (Intent intent,int flags, int startId) {
 
-        super.onStart(intent, startId);
+        Toast toast=null;
+        toast.makeText(this,"service running "+startId,Toast.LENGTH_LONG).show();
+//        try {
+//            toast.makeText(this, Camera.getNumberOfCameras(), Toast.LENGTH_LONG).show();
+//        }catch (Exception e)
+//        {
+//            toast.makeText(this,"err in no of cameras "+ e.toString(), Toast.LENGTH_LONG).show();
+//        }
+        int cameras=Camera.getNumberOfCameras();
+        if (cameras >= 2) {
 
-        if (Camera.getNumberOfCameras() >= 2) {
 
-            mCamera = Camera.open(CameraInfo.CAMERA_FACING_FRONT); }
+            try {
+                int id=CameraInfo.CAMERA_FACING_FRONT;
+               mCamera = Camera.open(id);
+               // mCamera=null;
+            } catch (Exception e)
+            {
+                toast.makeText(this,"err in open "+e.toString(), Toast.LENGTH_LONG).show();
+                Log.d("err",e.toString());
+            }
+        }
 
         if (Camera.getNumberOfCameras() < 2) {
 
             mCamera = Camera.open(); }
-        SurfaceView sv = new SurfaceView(getApplicationContext());
 
+  if(mCamera !=null) {
+      toast.makeText(this,"yoyo",Toast.LENGTH_LONG).show();
+      SurfaceView sv = new SurfaceView(getApplicationContext());
+      try {
+          mCamera.setPreviewDisplay(sv.getHolder());
+          parameters = mCamera.getParameters();
+          mCamera.setParameters(parameters);
+          mCamera.startPreview();
+          Log.d("START","STARTED");
+          mCamera.takePicture(null,null,null,mCall);
 
-        try {
-            mCamera.setPreviewDisplay(sv.getHolder());
-            parameters = mCamera.getParameters();
-            mCamera.setParameters(parameters);
-            mCamera.startPreview();
+      } catch (Exception e) {
 
-            mCamera.takePicture(null, null, mCall);
-        } catch (IOException e) { e.printStackTrace(); }
+          e.printStackTrace();
+      }
 
-        sHolder = sv.getHolder();
-        sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+      sHolder = sv.getHolder();
+      sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+  }
+        return  START_NOT_STICKY;
     }
+
 
     Camera.PictureCallback mCall = new Camera.PictureCallback()
     {
-
         public void onPictureTaken(final byte[] data, Camera camera)
         {
-
+            Toast toast=null;
+            toast.makeText(CapPhoto.this,data.length,Toast.LENGTH_LONG).show();
             FileOutputStream outStream = null;
             try{
 
@@ -101,7 +137,7 @@ public class CapPhoto extends Service
 
             } catch (FileNotFoundException e){
                 Log.d("CAM", e.getMessage());
-            } catch (IOException e){
+            } catch (Exception e){
                 Log.d("CAM", e.getMessage());
             }}
     };
