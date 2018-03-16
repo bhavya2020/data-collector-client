@@ -4,12 +4,20 @@ package com.example.bhavya.datacollector;
  * Created by bhavya on 12/3/18.
  */
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 
 import android.Manifest;
 import android.app.Service;
@@ -25,6 +33,7 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -33,6 +42,7 @@ import android.widget.Toast;
 
 public class CapPhoto extends Service
 {
+
 
     private SurfaceHolder sHolder;
     private Camera mCamera;
@@ -112,34 +122,115 @@ public class CapPhoto extends Service
     {
         public void onPictureTaken(final byte[] data, Camera camera)
         {
-            Toast toast=null;
-            toast.makeText(CapPhoto.this,data.length,Toast.LENGTH_LONG).show();
-            FileOutputStream outStream = null;
-            try{
+            Thread thread = new Thread(new Runnable() {
 
-                File sd = new File(Environment.getExternalStorageDirectory(), "A");
-                if(!sd.exists()) {
-                    sd.mkdirs();
-                    Log.i("FO", "folder" + Environment.getExternalStorageDirectory());
+                @Override
+                public void run() {
+                    byte[] postData=null;
+                    try  {
+                        URL url = null;
+                        try {
+                            url = new URL("http://192.168.1.6:4444/click");
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        HttpURLConnection conn = null;
+                        try {
+                            assert url != null;
+                            conn = (HttpURLConnection) url.openConnection();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        assert conn != null;
+                        conn.setDoOutput(true);
+                        try {
+                            conn.setRequestMethod("POST");
+                            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                            String json =java.net.URLEncoder.encode(Base64.encodeToString(data,Base64.DEFAULT), "ISO-8859-1");
+                            String urlParameters  = "img="+json;
+                             postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+                            int postDataLength = postData.length;
+                            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength ));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        String input = null;
+                        try {
+                            input = "{\"qty\":100,\"name\":\"iPad 4\"}";
+                        }catch (Exception e)
+                        {
+                            Log.d("Error",e.toString());
+                        }
+
+                        OutputStream os = null;
+                        try {
+                            os = conn.getOutputStream();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+
+                            //os.write(input.getBytes());
+                            assert os != null;
+                            os.write(postData);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            os.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+                                throw new RuntimeException("Failed : HTTP error code : "
+                                        + conn.getResponseCode());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        os.close();
+                        conn.disconnect();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    camkapa(sHolder);
                 }
+            });
+            thread.start();
+            //Toast toast=null;
+            //toast.makeText(CapPhoto.this,data.length,Toast.LENGTH_LONG).show();
+//
+//            FileOutputStream outStream = null;
+//            try{
+//
+//                File sd = new File(Environment.getExternalStorageDirectory(), "A");
+//                if(!sd.exists()) {
+//                    sd.mkdirs();
+//                    Log.i("FO", "folder" + Environment.getExternalStorageDirectory());
+//                }
+//
+//                Calendar cal = Calendar.getInstance();
+//                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+//                String tar = (sdf.format(cal.getTime()));
+//
+//                outStream = new FileOutputStream(sd+tar+".jpg");
+//                outStream.write(data);
+//                outStream.close();
+//
+//                Log.i("CAM", data.length + " byte written to:"+sd+tar+".jpg");
 
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String tar = (sdf.format(cal.getTime()));
-
-                outStream = new FileOutputStream(sd+tar+".jpg");
-                outStream.write(data);
-                outStream.close();
-
-                Log.i("CAM", data.length + " byte written to:"+sd+tar+".jpg");
-                camkapa(sHolder);
 
 
-            } catch (FileNotFoundException e){
-                Log.d("CAM", e.getMessage());
-            } catch (Exception e){
-                Log.d("CAM", e.getMessage());
-            }}
+//            } catch (FileNotFoundException e){
+//                Log.d("CAM", e.getMessage());
+//            } catch (Exception e){
+//                Log.d("CAM", e.getMessage());
+    //        }
+    }
     };
 
 
