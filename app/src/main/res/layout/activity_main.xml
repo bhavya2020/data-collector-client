@@ -1,27 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.bhavya.datacollector.MainActivity">
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.bhavya.datacollector.MainActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="PICTURES:" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="start photos"
+                tools:layout_editor_absoluteX="131dp"
+                tools:layout_editor_absoluteY="119dp" />
+
+            <Button
+                android:id="@+id/stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="stop photos"
+                tools:layout_editor_absoluteX="131dp"
+                tools:layout_editor_absoluteY="119dp" />
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="SENSORS:" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Choose a sensor:" />
+
+        <RadioGroup
+            android:id="@+id/SENSORS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/lAcc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Linear Acceleration" />
+
+            <RadioButton
+                android:id="@+id/Accelerometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Accelerometer" />
+
+            <RadioButton
+                android:id="@+id/gyroscope"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="gyroscope" />
+
+            <RadioButton
+                android:id="@+id/magnetometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="magnetometer" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sensor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="get sensor values"
+                tools:layout_editor_absoluteX="131dp"
+                tools:layout_editor_absoluteY="119dp" />
+
+            <Button
+                android:id="@+id/sensorStop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="stop"
+                tools:layout_editor_absoluteX="131dp"
+                tools:layout_editor_absoluteY="119dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="x-"/>
+            <TextView
+                android:id="@+id/ValuesX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y-"/>
+            <TextView
+                android:id="@+id/ValuesY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="z-"/>
+            <TextView
+                android:id="@+id/ValuesZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+        </LinearLayout>
 
 
 
-    <Button
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start"
-        tools:layout_editor_absoluteX="131dp"
-        tools:layout_editor_absoluteY="119dp" />
-    <Button
-        android:id="@+id/stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="stop"
-        tools:layout_editor_absoluteX="131dp"
-        tools:layout_editor_absoluteY="119dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="choose the category for storing the values" />
 
-</LinearLayout>
+        <RadioGroup
+            android:id="@+id/storage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/aggressiveBreaking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive Breaking" />
+
+            <RadioButton
+                android:id="@+id/aggressiveAcceleration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive Acceleration" />
+
+            <RadioButton
+                android:id="@+id/aggressiveLeft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive left turn" />
+
+            <RadioButton
+                android:id="@+id/aggressiveRight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive right turn " />
+
+            <RadioButton
+                android:id="@+id/aggressiveLeftLane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive left lane change " />
+
+            <RadioButton
+                android:id="@+id/aggressiveRightLane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="aggressive right Lane change " />
+
+            <RadioButton
+                android:id="@+id/nonAggressive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="non aggressive" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="store"
+            tools:layout_editor_absoluteX="131dp"
+            tools:layout_editor_absoluteY="119dp" />
+
+
+    </LinearLayout>
+</ScrollView>

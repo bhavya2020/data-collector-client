@@ -95,6 +95,7 @@ public class CapPhoto extends Service
 
       } catch (Exception e) {
 
+
           e.printStackTrace();
       }
 
@@ -120,6 +121,7 @@ public class CapPhoto extends Service
                         try {
                             url = new URL("http://192.168.1.11:4444/click");
                         } catch (MalformedURLException e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
                         HttpURLConnection conn = null;
@@ -127,6 +129,7 @@ public class CapPhoto extends Service
                             assert url != null;
                             conn = (HttpURLConnection) url.openConnection();
                         } catch (IOException e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
 
@@ -141,23 +144,28 @@ public class CapPhoto extends Service
                             int postDataLength = postData.length;
                             conn.setRequestProperty("Content-Length", Integer.toString(postDataLength ));
                         } catch (Exception e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
                         OutputStream os = null;
                         try {
                             os = conn.getOutputStream();
                         } catch (Exception e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
                         try {
                             assert os != null;
+
                             os.write(postData);
                         } catch (Exception e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
                         try {
                             os.flush();
                         } catch (IOException e) {
+                            Log.d("err",e.toString());
                             e.printStackTrace();
                         }
                         os.close();
@@ -174,6 +182,7 @@ public class CapPhoto extends Service
 
                         conn.disconnect();
                     } catch (Exception e) {
+                        Log.d("err",e.toString());
                         e.printStackTrace();
                     }
 
