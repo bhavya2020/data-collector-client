@@ -5,10 +5,12 @@ package com.example.bhavya.datacollector;
  */
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -53,15 +55,6 @@ public class CapPhoto extends Service
     {
         super.onCreate();
         Log.d("CAM", "start");
-
-//
-//        if (android.os.Build.VERSION.SDK_INT > 9) {
-//            StrictMode.ThreadPolicy policy =
-//                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//            StrictMode.setThreadPolicy(policy);}
-//          Thread myThread = null;
-
-
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
 
@@ -70,12 +63,6 @@ public class CapPhoto extends Service
 
         Toast toast=null;
         toast.makeText(this,"service running "+startId,Toast.LENGTH_LONG).show();
-//        try {
-//            toast.makeText(this, Camera.getNumberOfCameras(), Toast.LENGTH_LONG).show();
-//        }catch (Exception e)
-//        {
-//            toast.makeText(this,"err in no of cameras "+ e.toString(), Toast.LENGTH_LONG).show();
-//        }
         int cameras=Camera.getNumberOfCameras();
         if (cameras >= 2) {
 
@@ -122,6 +109,7 @@ public class CapPhoto extends Service
     {
         public void onPictureTaken(final byte[] data, Camera camera)
         {
+            final StringBuffer response=new StringBuffer();
             Thread thread = new Thread(new Runnable() {
 
                 @Override
@@ -130,7 +118,7 @@ public class CapPhoto extends Service
                     try  {
                         URL url = null;
                         try {
-                            url = new URL("http://192.168.1.6:4444/click");
+                            url = new URL("http://192.168.1.11:4444/click");
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -155,14 +143,6 @@ public class CapPhoto extends Service
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        String input = null;
-                        try {
-                            input = "{\"qty\":100,\"name\":\"iPad 4\"}";
-                        }catch (Exception e)
-                        {
-                            Log.d("Error",e.toString());
-                        }
-
                         OutputStream os = null;
                         try {
                             os = conn.getOutputStream();
@@ -170,8 +150,6 @@ public class CapPhoto extends Service
                             e.printStackTrace();
                         }
                         try {
-
-                            //os.write(input.getBytes());
                             assert os != null;
                             os.write(postData);
                         } catch (Exception e) {
@@ -182,16 +160,18 @@ public class CapPhoto extends Service
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
-                        try {
-                            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                                throw new RuntimeException("Failed : HTTP error code : "
-                                        + conn.getResponseCode());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                         os.close();
+                        conn.getResponseCode();
+                        BufferedReader in = new BufferedReader(
+                                new InputStreamReader(conn.getInputStream()));
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null) {
+                            response.append(inputLine);
+                        }
+                        in.close();
+                        conn.disconnect();
+
+
                         conn.disconnect();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -201,36 +181,16 @@ public class CapPhoto extends Service
                 }
             });
             thread.start();
-            //Toast toast=null;
-            //toast.makeText(CapPhoto.this,data.length,Toast.LENGTH_LONG).show();
-//
-//            FileOutputStream outStream = null;
-//            try{
-//
-//                File sd = new File(Environment.getExternalStorageDirectory(), "A");
-//                if(!sd.exists()) {
-//                    sd.mkdirs();
-//                    Log.i("FO", "folder" + Environment.getExternalStorageDirectory());
-//                }
-//
-//                Calendar cal = Calendar.getInstance();
-//                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-//                String tar = (sdf.format(cal.getTime()));
-//
-//                outStream = new FileOutputStream(sd+tar+".jpg");
-//                outStream.write(data);
-//                outStream.close();
-//
-//                Log.i("CAM", data.length + " byte written to:"+sd+tar+".jpg");
-
-
-
-//            } catch (FileNotFoundException e){
-//                Log.d("CAM", e.getMessage());
-//            } catch (Exception e){
-//                Log.d("CAM", e.getMessage());
-    //        }
-    }
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(response.toString().equals("got"))
+            {
+                Log.d("success","image sent");
+            }
+        }
     };
 
 

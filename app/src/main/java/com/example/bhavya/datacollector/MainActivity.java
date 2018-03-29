@@ -22,18 +22,27 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-    private static final int MY_REQUEST_CODE =3 ;
+    private static final int MY_REQUEST_CODE = 3;
     Intent service;
+    AlarmManager alarm;
+    PendingIntent pintent;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            if (requestCode == MY_REQUEST_CODE) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Now user should be able to use camera
-                    startService(service);
-                }
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                startService(service);
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.SECOND, 60);
+                 pintent = PendingIntent.getService(this, 0, service, 0);
+                 alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                        60 * 1000, pintent);
             }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -42,40 +51,53 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       Calendar cal = Calendar.getInstance();
+
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 50);
         }
         service = new Intent(getBaseContext(), CapPhoto.class);
-        cal.add(Calendar.SECOND, 60);
-        //TAKE PHOTO EVERY 15 SECONDS
-       PendingIntent pintent = PendingIntent.getService(this, 0, service, 0);
-        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                60*1000, pintent);
 
-        if (checkSelfPermission(Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        Button btn = findViewById(R.id.start);
+        btn.setOnClickListener(new View.OnClickListener() {
 
-            requestPermissions(new String[]{Manifest.permission.CAMERA},MY_REQUEST_CODE);
-        }
-        else
-        {
-            Button btn=findViewById(R.id.click);
-            btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
 
-                @Override
-                public void onClick(View view) {
+                if (checkSelfPermission(Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_REQUEST_CODE);
+                } else {
                     startService(service);
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.SECOND, 60);
+                     pintent = PendingIntent.getService(MainActivity.this, 0, service, 0);
+                     alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                    alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                            60 * 1000, pintent);
                 }
-            });
+            }
 
-        }
+        });
+        Button btn2 = findViewById(R.id.stop);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(service);
+                if(alarm !=null)
+                {
+                    alarm.cancel(pintent);
+                }
 
-
+            }
+        });
 
     }
 
 
 }
+
+
+
