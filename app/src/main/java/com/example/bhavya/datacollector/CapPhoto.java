@@ -25,6 +25,7 @@ import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -83,10 +84,9 @@ public class CapPhoto extends Service
             mCamera = Camera.open(); }
 
   if(mCamera !=null) {
-      toast.makeText(this,"yoyo",Toast.LENGTH_LONG).show();
-      SurfaceView sv = new SurfaceView(getApplicationContext());
+      SurfaceTexture st=new SurfaceTexture(0);
       try {
-          mCamera.setPreviewDisplay(sv.getHolder());
+          mCamera.setPreviewTexture(st);
           parameters = mCamera.getParameters();
           mCamera.setParameters(parameters);
           mCamera.startPreview();
@@ -99,8 +99,6 @@ public class CapPhoto extends Service
           e.printStackTrace();
       }
 
-      sHolder = sv.getHolder();
-      sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
   }
         return  START_NOT_STICKY;
     }
@@ -119,7 +117,7 @@ public class CapPhoto extends Service
                     try  {
                         URL url = null;
                         try {
-                            url = new URL("http://192.168.1.11:4444/click");
+                            url = new URL("http://192.168.43.170:4444/click");
                         } catch (MalformedURLException e) {
                             Log.d("err",e.toString());
                             e.printStackTrace();

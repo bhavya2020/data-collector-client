@@ -47,42 +47,7 @@
             android:padding="10dp"
             android:text="SENSORS:" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Choose a sensor:" />
 
-        <RadioGroup
-            android:id="@+id/SENSORS"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/lAcc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Linear Acceleration" />
-
-            <RadioButton
-                android:id="@+id/Accelerometer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Accelerometer" />
-
-            <RadioButton
-                android:id="@+id/gyroscope"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="gyroscope" />
-
-            <RadioButton
-                android:id="@+id/magnetometer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="magnetometer" />
-
-        </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,16 +71,22 @@
                 tools:layout_editor_absoluteY="119dp" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="accelerometer:"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="x-"/>
             <TextView
-                android:id="@+id/ValuesX"
+                android:id="@+id/AValuesX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -125,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="y-"/>
             <TextView
-                android:id="@+id/ValuesY"
+                android:id="@+id/AValuesY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -135,15 +106,132 @@
                 android:layout_height="wrap_content"
                 android:text="z-"/>
             <TextView
-                android:id="@+id/ValuesZ"
+                android:id="@+id/AValuesZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="0" />
         </LinearLayout>
-
-
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="linear acceleration:"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="x-"/>
+            <TextView
+                android:id="@+id/lAValuesX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y-"/>
+            <TextView
+                android:id="@+id/lAValuesY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="z-"/>
+            <TextView
+                android:id="@+id/lAValuesZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="magnetometer:"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="x-"/>
+            <TextView
+                android:id="@+id/MValuesX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y-"/>
+            <TextView
+                android:id="@+id/MValuesY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="z-"/>
+            <TextView
+                android:id="@+id/MValuesZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="gyroscope:"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="x-"/>
+            <TextView
+                android:id="@+id/GValuesX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y-"/>
+            <TextView
+                android:id="@+id/GValuesY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="z-"/>
+            <TextView
+                android:id="@+id/GValuesZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="0" />
+        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

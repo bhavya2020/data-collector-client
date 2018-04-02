@@ -44,9 +44,9 @@ public class MainActivity extends Activity implements SensorEventListener{
     SensorManager mSensorManager;
     RadioGroup SENSORS;
     RadioGroup storage;
-    TextView ValuesX;
-    TextView ValuesY;
-    TextView ValuesZ;
+    TextView AValuesX,lAValuesX,MValuesX,GValuesX;
+    TextView AValuesY,lAValuesY,MValuesY,GValuesY;;
+    TextView AValuesZ,lAValuesZ,MValuesZ,GValuesZ;;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -118,38 +118,36 @@ public class MainActivity extends Activity implements SensorEventListener{
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Sensor mSensor=null;
+                Sensor accelerometer=null,linearAcceleration=null,gyroscope=null,magnetometer=null;
+
                 mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-                SENSORS=findViewById(R.id.SENSORS);
-                ValuesX=findViewById(R.id.ValuesX);
-                ValuesY=findViewById(R.id.ValuesY);
-                ValuesZ=findViewById(R.id.ValuesZ);
+                AValuesX=findViewById(R.id.AValuesX);
+                AValuesY=findViewById(R.id.AValuesY);
+                AValuesZ=findViewById(R.id.AValuesZ);
+                lAValuesX=findViewById(R.id.lAValuesX);
+                lAValuesY=findViewById(R.id.lAValuesY);
+                lAValuesZ=findViewById(R.id.lAValuesZ);
+                MValuesX=findViewById(R.id.MValuesX);
+                MValuesY=findViewById(R.id.MValuesY);
+                MValuesZ=findViewById(R.id.MValuesZ);
+                GValuesX=findViewById(R.id.GValuesX);
+                GValuesY=findViewById(R.id.GValuesY);
+                GValuesZ=findViewById(R.id.GValuesZ);
 
-                int sensorID=SENSORS.getCheckedRadioButtonId();
+                accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                linearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+                gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+                magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-                if(sensorID == R.id.Accelerometer)
-                {
-                    selectedSensor="Accelerometer";
-                    mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                }
-                else  if(sensorID == R.id.lAcc)
-                {
-                    selectedSensor="linear Acceleration";
-                    mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-                }else  if(sensorID == R.id.gyroscope)
-                {
-                    selectedSensor="gyroscope";
-                    mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-                }else  if(sensorID == R.id.magnetometer)
-                {
-                    selectedSensor="magnetometer";
-                    mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-                }
-
-
-                if(mSensor!=null)
-                    mSensorManager.registerListener(MainActivity.this,mSensor,SensorManager.SENSOR_DELAY_NORMAL);
+                if(accelerometer!=null)
+                    mSensorManager.registerListener(MainActivity.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                if(linearAcceleration!=null)
+                    mSensorManager.registerListener(MainActivity.this,linearAcceleration,SensorManager.SENSOR_DELAY_NORMAL);
+                if(gyroscope!=null)
+                    mSensorManager.registerListener(MainActivity.this,gyroscope,SensorManager.SENSOR_DELAY_NORMAL);
+                if(magnetometer!=null)
+                    mSensorManager.registerListener(MainActivity.this,magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
             }
         });
         Button btn4 = findViewById(R.id.sensorStop);
@@ -164,11 +162,19 @@ public class MainActivity extends Activity implements SensorEventListener{
             @Override
             public void onClick(View view) {
                 storage=findViewById(R.id.storage);
-                ValuesX=findViewById(R.id.ValuesX);
-                ValuesY=findViewById(R.id.ValuesY);
-                ValuesZ=findViewById(R.id.ValuesZ);
-
-                String json="{\"sensor\":\""+selectedSensor+"\",\"x\":\""+ValuesX.getText()+"\",\"y\":\""+ValuesY.getText()+"\",\"z\":\""+ValuesZ.getText()+"\",\"class\":\"";
+                AValuesX=findViewById(R.id.AValuesX);
+                AValuesY=findViewById(R.id.AValuesY);
+                AValuesZ=findViewById(R.id.AValuesZ);
+                lAValuesX=findViewById(R.id.lAValuesX);
+                lAValuesY=findViewById(R.id.lAValuesY);
+                lAValuesZ=findViewById(R.id.lAValuesZ);
+                MValuesX=findViewById(R.id.MValuesX);
+                MValuesY=findViewById(R.id.MValuesY);
+                MValuesZ=findViewById(R.id.MValuesZ);
+                GValuesX=findViewById(R.id.GValuesX);
+                GValuesY=findViewById(R.id.GValuesY);
+                GValuesZ=findViewById(R.id.GValuesZ);
+                String json="{\"ax\":\""+AValuesX.getText()+"\",\"ay\":\""+AValuesY.getText()+"\",\"az\":\""+AValuesZ.getText()+"\",\"lx\":\""+lAValuesX.getText()+"\",\"ly\":\""+lAValuesY.getText()+"\",\"lz\":\""+lAValuesZ.getText()+"\",\"gx\":\""+GValuesX.getText()+"\",\"gy\":\""+GValuesY.getText()+"\",\"gz\":\""+GValuesZ.getText()+"\",\"mx\":\"" +MValuesX.getText()+"\",\"my\":\""+MValuesY.getText()+"\",\"mz\":\""+MValuesZ.getText()+"\",\"class\":\"";
                 int storageID=storage.getCheckedRadioButtonId();
 
                 if(storageID == R.id.aggressiveAcceleration)
@@ -201,7 +207,7 @@ public class MainActivity extends Activity implements SensorEventListener{
                     @Override
                     public void run() {
                         try {
-                            URL url = new URL("http://192.168.1.11:4444/sensor");
+                            URL url = new URL("http://192.168.43.170:4444/sensor");
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setDoOutput(true);
                             conn.setRequestMethod("POST");
@@ -244,9 +250,27 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     }
     public void onSensorChanged(SensorEvent event){
-        ValuesX.setText( String.valueOf(event.values[0]));
-        ValuesY.setText( String.valueOf(event.values[1]));
-        ValuesZ.setText( String.valueOf(event.values[2]));
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER) {
+            AValuesX.setText(String.valueOf(event.values[0]));
+            AValuesY.setText(String.valueOf(event.values[1]));
+            AValuesZ.setText(String.valueOf(event.values[2]));
+        }
+        if(event.sensor.getType()==Sensor.TYPE_LINEAR_ACCELERATION) {
+            lAValuesX.setText(String.valueOf(event.values[0]));
+            lAValuesY.setText(String.valueOf(event.values[1]));
+            lAValuesZ.setText(String.valueOf(event.values[2]));
+        }
+        if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD) {
+            MValuesX.setText(String.valueOf(event.values[0]));
+            MValuesY.setText(String.valueOf(event.values[1]));
+            MValuesZ.setText(String.valueOf(event.values[2]));
+        }
+        if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
+            GValuesX.setText(String.valueOf(event.values[0]));
+            GValuesY.setText(String.valueOf(event.values[1]));
+            GValuesZ.setText(String.valueOf(event.values[2]));
+        }
+
     }
 
     @Override
